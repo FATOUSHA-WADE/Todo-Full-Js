@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Todo {
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(255)
+  description String?  @db.Text
+  completed   Boolean  @default(false)
+  photoUrl    String?  @db.Text
+  audioUrl    String?  @db.Text 
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      Int      @db.Int
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permissions TodoPermission[]
+
+  @@map("todos")
+}
+
+model User {
+  id    Int    @id @default(autoincrement())
+  email String @unique @db.VarChar(255)
+  password String @db.VarChar(255)
+  name  String? @db.VarChar(255)
+  role  String @default("USER") @db.VarChar(50)
+  todos Todo[]
+  todoPermissions TodoPermission[]
+  activityLogs ActivityLog[]
+
+  @@map("users")
+}
+
+model TodoPermission {
+  id         Int      @id @default(autoincrement())
+  todoId     Int
+  userId     Int
+  canEdit    Boolean  @default(false)
+  canDelete  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  
+  todo       Todo     @relation(fields: [todoId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([todoId, userId])
+  @@map("todo_permissions")
+}
+
+model ActivityLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  action    String   @db.VarChar(100) // CREATE, UPDATE, DELETE, LOGIN, LOGOUT, etc.
+  entity    String   @db.VarChar(50)  // TODO, USER, PERMISSION, etc.
+  entityId  Int?     // ID de l'entité concernée
+  details   String?  @db.Text         // Détails supplémentaires en JSON
+  ipAddress String?  @db.VarChar(45)  // Adresse IP de l'utilisateur
+  userAgent String?  @db.Text         // User agent du navigateur
+  createdAt DateTime @default(now())
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("activity_logs")
+}
