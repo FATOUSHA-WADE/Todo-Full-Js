@@ -5,7 +5,9 @@ export const createTodoSchema = z.object({
     description: z.string().max(1000, 'La description ne peut pas dépasser 1000 caractères').trim().optional(),
     photoUrl: z.string().min(1).optional().nullable(),
     userId: z.number().int().positive('L\'ID utilisateur doit être un entier positif'),
-    audioUrl: z.string() 
+    audioUrl: z.string(), 
+    startDate :z.string(),
+    endDate:z.string()
 });
 
 export const updateTodoSchema = z.object({
@@ -13,7 +15,9 @@ export const updateTodoSchema = z.object({
     description: z.string().max(1000, 'La description ne peut pas dépasser 1000 caractères').trim().optional().nullable(),
     photoUrl: z.string().min(1).optional().nullable(),
     completed: z.boolean().optional(),
-    audioUrl: z.string() 
+    audioUrl: z.string().optional(), 
+     startDate :z.string().optional(),
+    endDate:z.string().optional()
 });
 
 export const todoParamsSchema = z.object({

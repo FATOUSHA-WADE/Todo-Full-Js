@@ -11,7 +11,8 @@ import {
     FiShield,
     FiImage,
     FiRefreshCw,
-    FiUser
+    FiUser,
+    FiX
 } from "react-icons/fi";
 
 const iconesActions = {
@@ -26,7 +27,7 @@ const iconesActions = {
     'FiActivity': FiActivity
 };
 
-function ActivitesRecentes({ limit = 5 }) {
+function ActivitesRecentes({ limit = 5, onFermer }) {
     const [logs, setLogs] = useState([]);
     const [chargement, setChargement] = useState(false);
     const [erreur, setErreur] = useState("");
@@ -85,11 +86,11 @@ function ActivitesRecentes({ limit = 5 }) {
                 <div className="flex justify-between items-center mb-4">
                     <h3 className="text-xl font-semibold text-gray-800">Activités récentes</h3>
                     <button
-                        onClick={chargerActivitesRecentes}
+                        onClick={onFermer}
                         className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
-                        title="Actualiser"
+                        title="Fermer"
                     >
-                        <FiRefreshCw size={16} className="text-gray-600" />
+                        <FiX size={18} className="text-gray-600" />
                     </button>
                 </div>
                 <div className="text-red-600 text-sm">{erreur}</div>
@@ -102,12 +103,11 @@ function ActivitesRecentes({ limit = 5 }) {
             <div className="flex justify-between items-center mb-4">
                 <h3 className="text-xl font-semibold text-gray-800">Activités récentes</h3>
                 <button
-                    onClick={chargerActivitesRecentes}
+                    onClick={onFermer}
                     className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
-                    title="Actualiser"
-                    disabled={chargement}
+                    title="Fermer"
                 >
-                    <FiRefreshCw size={16} className={`text-gray-600 ${chargement ? 'animate-spin' : ''}`} />
+                    <FiX size={18} className="text-gray-600" />
                 </button>
             </div>
             
@@ -166,7 +166,7 @@ function ActivitesRecentes({ limit = 5 }) {
             {logs.length > 0 && (
                 <div className="mt-4 pt-3 border-t border-gray-200">
                     <button className="w-full text-center text-sm text-cyan-600 hover:text-cyan-800 font-medium">
-                        Voir toutes les activités
+                        Voici Toutes les activités
                     </button>
                 </div>
             )}

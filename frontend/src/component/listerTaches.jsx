@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import serviceTache from "../services/serviceTache";
 import { 
     FiPlus, 
@@ -18,7 +18,7 @@ import {
     FiLock
 } from "react-icons/fi";
 
-function ListerTaches({ onSelectionnerTache, onCreerTache }) {
+function ListerTaches({ onSelectionnerTache, onCreerTache, setNotification }) {
     const [taches, setTaches] = useState([]);
     const [chargement, setChargement] = useState(false);
     const [erreur, setErreur] = useState("");
@@ -32,6 +32,7 @@ function ListerTaches({ onSelectionnerTache, onCreerTache }) {
         hasNextPage: false,
         hasPrevPage: false
     });
+    const [notification, setNotificationState] = useState(null);
 
     useEffect(() => {
         const utilisateur = localStorage.getItem("user");
@@ -180,6 +181,35 @@ function ListerTaches({ onSelectionnerTache, onCreerTache }) {
         }));
     };
 
+    // Fonction pour marquer une tâche comme terminée
+    async function marquerTacheTerminee(id) {
+        await serviceTache.modifierTache(id, { completed: true });
+        // Recharge la liste des tâches
+        chargerTaches && chargerTaches();
+    }
+
+    // Hook pour gérer les notifications et l'automatisation
+    useEffect(() => {
+        let timers = [];
+
+        taches.forEach(tache => {
+            if (!tache.completed && tache.endDate) {
+                const end = new Date(tache.endDate).getTime();
+                const now = Date.now();
+                if (end > now) {
+                    const timer = setTimeout(async () => {
+                        setNotification(`La tâche "${tache.title}" est terminée !`);
+                        await serviceTache.modifierTache(tache.id, { completed: true });
+                        chargerTaches && chargerTaches();
+                    }, end - now);
+                    timers.push(timer);
+                }
+            }
+        });
+
+        return () => timers.forEach(clearTimeout);
+    }, [taches]);
+
     return (
         <div className="max-w-6xl mx-auto">
             <div className="flex justify-between items-center mb-8">
@@ -298,27 +328,12 @@ function ListerTaches({ onSelectionnerTache, onCreerTache }) {
                                                     position: 'relative'
                                                 }}
                                             />
-                                            {tache.completed && (
-                                                <span
-                                                    style={{
-                                                        position: 'absolute',
-                                                        left: 8,
-                                                        top: 8,
-                                                        width: 16,
-                                                        height: 16,
-                                                        borderRadius: '50%',
-                                                        background: '#f59e0b',
-                                                        display: 'block'
-                                                    }}
-                                                />
-                                            )}
-                                            <h3 
-                                                className={`text-xl font-semibold ml-2 ${
-                                                    tache.completed ? "line-through text-gray-400" : "text-gray-800"
-                                                }`}
+                                         
+                                            <span
+                                              className={`font-bold text-lg ${tache.completed ? "text-gray-400 line-through" : "text-gray-800"}`}
                                             >
-                                                {tache.title}
-                                            </h3>
+                                              {tache.title}
+                                            </span>
                                             {estTacheUtilisateur && (
                                                 <span className="ml-3 px-2 py-1 bg-cyan-100 text-cyan-700 text-xs rounded-full font-medium">
                                                     Ma tâche
@@ -349,16 +364,12 @@ function ListerTaches({ onSelectionnerTache, onCreerTache }) {
                                                 </div>
                                             </div>
                                         )}
-
+                                     
                                         {tache.audioUrl && (
-                                            <audio controls src={tache.audioUrl} className="w-80 h-10 mt-2" />
+                                            <audio controls src={tache.audioUrl} className="w-80 h-10 mt-2 mb-4" />
                                         )}
-
+                                        
                                         <div className="ml-9 text-sm text-gray-500 flex items-center gap-4">
-                                            <div className="flex items-center gap-1">
-                                                <FiCalendar size={14} />
-                                                Créée le {new Date(tache.createdAt).toLocaleDateString('fr-FR')}
-                                            </div>
                                             <div className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-full">
                                                 <FiUser size={14} className="text-blue-600" />
                                                 <span className="font-medium text-gray-700">
@@ -370,6 +381,17 @@ function ListerTaches({ onSelectionnerTache, onCreerTache }) {
                                                     </span>
                                                 )}
                                             </div>
+                                        </div>
+
+                                        <div className="flex items-center gap-4 ml-122 text-sm text-gray-600">
+                                            <span>
+                                                <FiCalendar className="inline mr-1" />
+                                                Début : {tache.startDate ? new Date(tache.startDate).toLocaleString('fr-FR') : "—"}
+                                            </span>
+                                            <span>
+                                                <FiCalendar className="inline mr-1" />
+                                                Fin : {tache.endDate ? new Date(tache.endDate).toLocaleString('fr-FR') : "—"}
+                                            </span>
                                         </div>
                                     </div>
 
@@ -498,6 +520,12 @@ function ListerTaches({ onSelectionnerTache, onCreerTache }) {
                             </button>
                         </div>
                     </div>
+                </div>
+            )}
+
+            {notification && (
+                <div className="fixed top-4 left-4 bg-green-500 text-white px-4 py-2 rounded shadow z-50">
+                    {notification}
                 </div>
             )}
         </div>

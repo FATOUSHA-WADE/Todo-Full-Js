@@ -9,7 +9,8 @@ import {
     FiUpload,
     FiCheck,
     FiAlertCircle,
-    FiMic
+    FiMic,
+    FiCalendar
 } from "react-icons/fi";
 
 function AjouterTache({ onTacheCreee, onAnnuler }) {
@@ -24,8 +25,12 @@ function AjouterTache({ onTacheCreee, onAnnuler }) {
     const [previewAudio, setPreviewAudio] = useState(null);
     const [fichierAudio, setFichierAudio] = useState(null);
     const [timer, setTimer] = useState(0);
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
     const mediaRecorderRef = useRef(null);
     const timerIntervalRef = useRef(null);
+    const startDateRef = useRef(null);
+    const endDateRef = useRef(null);
 
 
     const gererSelectionPhoto = (e) => {
@@ -94,7 +99,9 @@ function AjouterTache({ onTacheCreee, onAnnuler }) {
                 description: description || null,
                 photoUrl: urlPhoto,
                 audioUrl: urlAudio, 
-                userId: idUtilisateur
+                userId: idUtilisateur,
+                startDate: startDate ? new Date(startDate).toISOString() : null,
+                endDate: endDate ? new Date(endDate).toISOString() : null
             };
 
             const resultat = await serviceTache.creerTache(donneesToche);
@@ -296,6 +303,55 @@ function AjouterTache({ onTacheCreee, onAnnuler }) {
                     
 
                    
+                </div>
+
+
+                <div className="mb-4">
+                    <label className="block text-gray-700 mb-2 font-medium">
+                        Date/Heure de début
+                    </label>
+                    <div className="relative flex items-center">
+                        <input
+                            ref={startDateRef}
+                            type="datetime-local"
+                            value={startDate}
+                            onChange={e => setStartDate(e.target.value)}
+                            className="w-full px-3 py-2 text-black border border-gray-300 rounded-md pr-10"
+                        />
+                        <FiCalendar
+                            className="absolute right-3 text-gray-900 cursor-pointer"
+                            size={20}
+                            onClick={() => startDateRef.current && startDateRef.current.showPicker && startDateRef.current.showPicker()}
+                            onMouseDown={e => {
+                                e.preventDefault();
+                                if (startDateRef.current) startDateRef.current.focus();
+                            }}
+                        />
+                    </div>
+                </div>
+                <div className="mb-4">
+                    <label className="block text-gray-700 mb-2 font-medium">
+                        Date/Heure de fin
+                    </label>
+                    <div className="relative flex items-center">
+                        <input
+                            ref={endDateRef}
+                            type="datetime-local"
+                            value={endDate}
+                            onChange={e => setEndDate(e.target.value)}
+                            className="w-full px-3 py-2 text-black border border-gray-300 rounded-md pr-10"
+                            
+                        />
+                        <FiCalendar
+                            className="absolute right-3 text-black  cursor-pointer"
+                            size={20}
+                            onClick={() => endDateRef.current && endDateRef.current.showPicker && endDateRef.current.showPicker()}
+                            onMouseDown={e => {
+                                e.preventDefault();
+                                if (endDateRef.current) endDateRef.current.focus();
+                            }}
+                        />
+                    </div>
                 </div>
 
 

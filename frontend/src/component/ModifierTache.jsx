@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import serviceTache from "../services/serviceTache";
-import { FiMic } from "react-icons/fi";
+import { FiMic, FiCalendar } from "react-icons/fi";
 
 function ModifierTache({ tache, onTacheModifiee, onAnnuler }) {
     const [titre, setTitre] = useState("");
@@ -14,6 +14,11 @@ function ModifierTache({ tache, onTacheModifiee, onAnnuler }) {
     const [erreurGenerale, setErreurGenerale] = useState("");
     const [fichierAudio, setFichierAudio] = useState(null);
     const [previewAudio, setPreviewAudio] = useState(tache?.audioUrl || null);
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
+
+    const startDateRef = useRef(null);
+    const endDateRef = useRef(null);
 
 
     useEffect(() => {
@@ -23,6 +28,8 @@ function ModifierTache({ tache, onTacheModifiee, onAnnuler }) {
             setTermine(tache.completed || false);
             setPhotoActuelle(tache.photoUrl);
             setPreviewAudio(tache.audioUrl || null);
+            setStartDate(tache.startDate || "");
+            setEndDate(tache.endDate || "");
         }
     }, [tache]);
 
@@ -105,7 +112,9 @@ function ModifierTache({ tache, onTacheModifiee, onAnnuler }) {
                 description: description || null,
                 completed: termine,
                 photoUrl: urlPhoto,
-                audioUrl: urlAudio 
+                audioUrl: urlAudio,
+                startDate: startDate,
+                endDate: endDate
             };
 
 
@@ -261,6 +270,54 @@ function ModifierTache({ tache, onTacheModifiee, onAnnuler }) {
                             <button type="button" onClick={supprimerAudio} className="ml-2 text-red-500">Supprimer</button>
                         </div>
                     )}
+                </div>
+
+
+                <div className="mb-4">
+                    <label className="block text-gray-700 mb-2 font-medium">
+                        Date/Heure de début
+                    </label>
+                    <div className="relative flex items-center">
+                        <input
+                            ref={startDateRef}
+                            type="datetime-local"
+                            value={startDate}
+                            onChange={e => setStartDate(e.target.value)}
+                            className="w-full px-3 py-2 border text-black border-gray-300 rounded-md pr-10"
+                        />
+                        <FiCalendar
+                            className="absolute right-3 text-gray-900 cursor-pointer"
+                            size={20}
+                            onClick={() => startDateRef.current && startDateRef.current.showPicker && startDateRef.current.showPicker()}
+                            onMouseDown={e => {
+                                e.preventDefault();
+                                if (startDateRef.current) startDateRef.current.focus();
+                            }}
+                        />
+                    </div>
+                </div>
+                <div className="mb-4">
+                    <label className="block text-gray-700 mb-2 font-medium">
+                        Date/Heure de fin
+                    </label>
+                    <div className="relative flex items-center">
+                        <input
+                            ref={endDateRef}
+                            type="datetime-local"
+                            value={endDate}
+                            onChange={e => setEndDate(e.target.value)}
+                            className="w-full px-3 py-2 border  border-gray-300 rounded-md pr-10"
+                        />
+                        <FiCalendar
+                            className="absolute right-3 text-gray-400 cursor-pointer"
+                            size={20}
+                            onClick={() => endDateRef.current && endDateRef.current.showPicker && endDateRef.current.showPicker()}
+                            onMouseDown={e => {
+                                e.preventDefault();
+                                if (endDateRef.current) endDateRef.current.focus();
+                            }}
+                        />
+                    </div>
                 </div>
 
 

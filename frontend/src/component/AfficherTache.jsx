@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import servicePermissionTache from "../services/servicePermissionTache";
 import Historique from "./Historique";
-import { FiUser } from "react-icons/fi";
+import { FiUser, FiCalendar } from "react-icons/fi";
 
 function AfficherTache({ tache, onModifier, onSupprimer, onFermer }) {
     const [permissions, setPermissions] = useState([]);
@@ -90,7 +90,7 @@ function AfficherTache({ tache, onModifier, onSupprimer, onFermer }) {
                     {onModifier && !peutModifier && (
                         <button
                             disabled
-                            className="px-3 py-1 bg-gray-400 text-gray-200 text-sm rounded-md cursor-not-allowed"
+                            className="px-3 py-1 bg-green-500 text-gray-200 text-sm rounded-md cursor-not-allowed"
                             title="Vous n'avez pas la permission de modifier cette tâche"
                         >
                             Modifier
@@ -118,7 +118,7 @@ function AfficherTache({ tache, onModifier, onSupprimer, onFermer }) {
                             onClick={onFermer}
                             className="px-3 py-1 bg-gray-600 text-white text-sm rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
                         >
-                            Fermer
+                            Quitter
                         </button>
                     )}
                 </div>
@@ -191,10 +191,7 @@ function AfficherTache({ tache, onModifier, onSupprimer, onFermer }) {
                     <div className="mb-6 bg-gray-50 p-4 rounded-lg">
                         <h3 className="text-lg font-semibold text-gray-700 mb-3">Informations</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-600">
-                            <div>
-                                <span className="font-medium">Créée le:</span>{' '}
-                                {formaterDate(tache.createdAt)}
-                            </div>
+                          
                             <div>
                                 <span className="font-medium">Modifiée le:</span>{' '}
                                 {formaterDate(tache.updatedAt)}
@@ -212,6 +209,18 @@ function AfficherTache({ tache, onModifier, onSupprimer, onFermer }) {
                                 <span className="font-medium">ID tâche:</span> {tache.id}
                             </div>
                         </div>
+                    </div>
+
+
+                    <div className="flex gap-6 text-gray-600 mb-4">
+                        <span>
+                            <FiCalendar className="inline mr-1" />
+                            Début : {tache.startDate ? new Date(tache.startDate).toLocaleString('fr-FR') : "—"}
+                        </span>
+                        <span>
+                            <FiCalendar className="inline mr-1" />
+                            Fin : {tache.endDate ? new Date(tache.endDate).toLocaleString('fr-FR') : "—"}
+                        </span>
                     </div>
 
 

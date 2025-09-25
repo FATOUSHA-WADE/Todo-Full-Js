@@ -16,9 +16,11 @@ datasource db {
 
 model Todo {
   id          Int      @id @default(autoincrement())
-  title       String   @db.VarChar(255)
-  description String?  @db.Text
+  title       String
+  description String?
   completed   Boolean  @default(false)
+  startDate   DateTime?
+  endDate     DateTime?
   photoUrl    String?  @db.Text
   audioUrl    String?  @db.Text 
   createdAt   DateTime @default(now())

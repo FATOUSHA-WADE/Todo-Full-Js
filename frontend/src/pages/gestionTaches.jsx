@@ -5,7 +5,7 @@ import ModifierTache from "../component/ModifierTache";
 import AfficherTache from "../component/AfficherTache";
 import AssignerPermission from "../component/AssignerPermission";
 import Historique from "../component/Historique";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { 
     FiList, 
     FiPlus, 
@@ -14,10 +14,10 @@ import {
     FiUsers, 
     FiLogOut,
     FiArrowLeft,
-    FiClock // Remplace FiActivity par FiClock
+    FiClock 
 } from "react-icons/fi";
 
-function Taches() {
+function Taches({ setNotification }) {
     const [vueActuelle, setVueActuelle] = useState("liste");
     const [tacheSelectionnee, setTacheSelectionnee] = useState(null);
     const navigate = useNavigate();
@@ -124,7 +124,6 @@ function Taches() {
             <main className="max-w-6xl mx-auto px-6 py-8">
                 {vueActuelle === "liste" && (
                     <div>
-                        {/* Boutons Créer et Historique côte à côte */}
                         <div className="flex gap-4 mb-8">
                             <button
                                 onClick={gererCreationTache}
@@ -149,6 +148,7 @@ function Taches() {
                             <ListerTaches
                                 onSelectionnerTache={gererSelectionTache}
                                 onCreerTache={gererCreationTache}
+                                setNotification={setNotification}
                             />
                         </div>
                         {/* ActivitesRecentes supprimé */}
@@ -158,6 +158,11 @@ function Taches() {
                 {vueActuelle === "historique" && (
                     <div className="bg-white rounded-2xl shadow-xl p-6 border-2 border-yellow-200">
                         <Historique />
+                        <div className="mt-4">
+                            <Link to="/activites-recentes" className="text-blue-600 underline">
+                                Voir toutes les activités récentes
+                            </Link>
+                        </div>
                     </div>
                 )}
 
