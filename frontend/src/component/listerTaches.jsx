@@ -181,14 +181,11 @@ function ListerTaches({ onSelectionnerTache, onCreerTache, setNotification }) {
         }));
     };
 
-    // Fonction pour marquer une tâche comme terminée
     async function marquerTacheTerminee(id) {
         await serviceTache.modifierTache(id, { completed: true });
-        // Recharge la liste des tâches
         chargerTaches && chargerTaches();
     }
 
-    // Hook pour gérer les notifications et l'automatisation
     useEffect(() => {
         let timers = [];
 

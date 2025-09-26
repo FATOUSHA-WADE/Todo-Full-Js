@@ -1,4 +1,4 @@
-📦 Installation projet 
+Installation projet 
 
 ### Clone le projet :
 git clone https://github.com/FATOUSHA-WADE/Todo-Full-Js
@@ -15,7 +15,7 @@ npm install
 
 
 
-⚙️ Configuration
+Configuration
 Variables d’environnement :
 ### Créer un fichier .env à la racine du backend avec :
   DATABASE_URL=mysql://Nom_Utilisateur:motDePasse@localhost:3306/Nom_base-donnée

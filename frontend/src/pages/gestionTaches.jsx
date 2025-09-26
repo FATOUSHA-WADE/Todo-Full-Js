@@ -38,9 +38,9 @@ function Taches({ setNotification }) {
         navigate("/login");
     };
 
-    const gererSelectionTache = (tache) => {
+    const gererSelectionTache = (tache, modifier = false) => {
         setTacheSelectionnee(tache);
-        setVueActuelle("afficher");
+        setVueActuelle(modifier ? "modifier" : "afficher");
     };
 
     const gererCreationTache = () => {
